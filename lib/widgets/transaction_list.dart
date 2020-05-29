@@ -4,12 +4,12 @@ import '../models/transaction.dart';
 
 class TransactionList extends StatelessWidget {
   final List<Transaction> transactions;
+  Function onDelete;
 
-  TransactionList({this.transactions});
+  TransactionList({this.transactions, this.onDelete});
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = Theme.of(context).primaryColor;
     return Container(
       height: 400,
       child: transactions.isEmpty
@@ -70,6 +70,11 @@ class TransactionList extends StatelessWidget {
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   subtitle: Text(DateFormat().format(t.date),
                       style: TextStyle(fontSize: 12)),
+                  trailing: IconButton(
+                    icon: Icon(Icons.delete),
+                    color: Colors.grey[400],
+                    onPressed: () => onDelete(t),
+                  ),
                 ));
               },
               itemCount: transactions.length,

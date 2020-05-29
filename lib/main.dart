@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import './widgets/new_tramsaction.dart';
 import './widgets/transaction_list.dart';
@@ -10,19 +10,27 @@ import './models/transaction.dart';
 void main() async {
   // 日本語による日付表示の設定
   Intl.defaultLocale = 'ja_JP';
-  await initializeDateFormatting('ja_JP');
   runApp(MyAppTop());
 }
 
 class MyAppTop extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(title: 'DEMO APP KUKITA', home: MyApp()
-    , theme: ThemeData(
-      // swatchはshadeも自動で生成してくれるらしい
-      primarySwatch: Colors.pink,
-      fontFamily: 'Quicksand'
-    ),
+    return MaterialApp(
+      title: 'DEMO APP KUKITA',
+      home: MyApp(),
+      theme: ThemeData(
+          // swatchはshadeも自動で生成してくれるらしい
+          primarySwatch: Colors.pink,
+          fontFamily: 'Quicksand'),
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: [
+        const Locale("en"),
+        const Locale("ja"),
+      ],
     );
   }
 }
@@ -45,24 +53,31 @@ class _MyAppState extends State<MyApp> {
         });
   }
 
-  void _addNewTransaction(String txTitle, double txAmount) {
-    var nowDate = DateTime.now();
+  void _addNewTransaction(
+      String txTitle, double txAmount, DateTime selectedDate) {
     final newTx = Transaction(
         title: txTitle,
         amount: txAmount,
-        date: nowDate,
-        id: nowDate.toString());
+        date: selectedDate,
+        id: selectedDate.toString());
     setState(() {
       _transactions.add(newTx);
     });
   }
 
-  List<Transaction> get _recentTransaction {
-    return _transactions.where((t) => t.date.isAfter(
-      DateTime.now().subtract(Duration(days: 7))
-    )).toList();
+  void _deleteTransaction(Transaction targetTransaction) {
+    setState(() {
+      _transactions
+          .removeWhere((transaction) => transaction.id == targetTransaction.id);
+    });
   }
 
+  List<Transaction> get _recentTransaction {
+    return _transactions
+        .where(
+            (t) => t.date.isAfter(DateTime.now().subtract(Duration(days: 7))))
+        .toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,12 +99,12 @@ class _MyAppState extends State<MyApp> {
             padding:
                 const EdgeInsets.symmetric(horizontal: 8.0, vertical: 20.0),
             // decoration: BoxDecoration(color: Colors.pink),
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
+            child: Column(mainAxisAlignment: MainAxisAlignment.start,
                 // crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Chart(_recentTransaction),
-                  TransactionList(transactions: _transactions)
+                  TransactionList(
+                      transactions: _transactions, onDelete: _deleteTransaction)
                 ])),
       ),
       floatingActionButton: FloatingActionButton(
