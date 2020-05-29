@@ -50,52 +50,59 @@ class _NewTransactionState extends State<NewTransaction> {
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).primaryColor;
-    return Card(
-      child: Container(
-          padding: EdgeInsets.all(10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: <Widget>[
-              TextField(
-                decoration: InputDecoration(labelText: 'タイトル'),
-                controller: _titleController,
-              ),
-              TextField(
-                decoration: InputDecoration(labelText: '価格'),
-                controller: _amountController,
-                keyboardType: TextInputType.number,
-              ),
-              Container(
-                height: 70,
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Text(
-                        _selectedDate == null
-                            ? 'No Date Chosen'
-                            : DateFormat.yMd().format(_selectedDate),
-                      ),
-                    ),
-                    FlatButton(
-                        onPressed: () {
-                          _presentDatePicker();
-                        },
-                        child: Text(
-                          'Choose Date',
-                          style: TextStyle(
-                              color: primaryColor, fontWeight: FontWeight.bold),
-                        ))
-                  ],
+    return SingleChildScrollView(
+      child: Card(
+        child: Container(
+            padding: EdgeInsets.only(
+              top: 10,
+              left: 10,
+              right: 10,
+              bottom: MediaQuery.of(context).viewInsets.bottom + 10,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                TextField(
+                  decoration: InputDecoration(labelText: 'タイトル'),
+                  controller: _titleController,
                 ),
-              ),
-              RaisedButton(
-                child: Text('決定'),
-                color: primaryColor,
-                textColor: Colors.white,
-                onPressed: _submitData,
-              )
-            ],
-          )),
+                TextField(
+                  decoration: InputDecoration(labelText: '価格'),
+                  controller: _amountController,
+                  keyboardType: TextInputType.number,
+                ),
+                Container(
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Text(
+                          _selectedDate == null
+                              ? 'No Date Chosen'
+                              : DateFormat.yMd().format(_selectedDate),
+                        ),
+                      ),
+                      FlatButton(
+                          onPressed: () {
+                            _presentDatePicker();
+                          },
+                          child: Text(
+                            'Choose Date',
+                            style: TextStyle(
+                                color: primaryColor,
+                                fontWeight: FontWeight.bold),
+                          ))
+                    ],
+                  ),
+                ),
+                RaisedButton(
+                  child: Text('決定'),
+                  color: primaryColor,
+                  textColor: Colors.white,
+                  onPressed: _submitData,
+                )
+              ],
+            )),
+      ),
     );
   }
 }

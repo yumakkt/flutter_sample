@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -82,29 +83,40 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).primaryColor;
+    final appBar = AppBar(
+      title: Text('DEMO APP KUKITA', style: TextStyle(color: primaryColor)),
+      backgroundColor: Colors.white,
+      actions: <Widget>[
+        IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () => _startAddNewTransaction(context))
+      ],
+    );
     return Scaffold(
-      appBar: AppBar(
-        title: Text('DEMO APP KUKITA', style: TextStyle(color: primaryColor)),
-        backgroundColor: Colors.white,
-        actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.add),
-              onPressed: () => _startAddNewTransaction(context))
-        ],
-      ),
+      appBar: appBar,
       // 画面スクロールを設定する。これがないとテキスト入力とかで隠れてしまう
       // ListViewを使うとchildren(配列)を入れることができる
       body: SingleChildScrollView(
         child: Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 8.0, vertical: 20.0),
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
             // decoration: BoxDecoration(color: Colors.pink),
             child: Column(mainAxisAlignment: MainAxisAlignment.start,
                 // crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Chart(_recentTransaction),
-                  TransactionList(
-                      transactions: _transactions, onDelete: _deleteTransaction)
+                  Container(
+                      height: (MediaQuery.of(context).size.height -
+                              appBar.preferredSize.height -
+                              MediaQuery.of(context).padding.top) *
+                          0.4,
+                      child: Chart(_recentTransaction)),
+                  Container(
+                      height: (MediaQuery.of(context).size.height -
+                              appBar.preferredSize.height -
+                              MediaQuery.of(context).padding.top) *
+                          0.6,
+                      child: TransactionList(
+                          transactions: _transactions,
+                          onDelete: _deleteTransaction))
                 ])),
       ),
       floatingActionButton: FloatingActionButton(
